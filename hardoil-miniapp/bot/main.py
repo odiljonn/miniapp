@@ -212,7 +212,9 @@ async def main() -> None:
     dp.startup.register(on_startup)
     await set_menu_button()
     logger.info("Bot polling boshlandi. Ctrl+C to'xtatish.")
-    await dp.start_polling(bot)
+    allowed = dp.resolve_used_update_types()
+    logger.info("Allowed updates: %s", allowed)
+    await dp.start_polling(bot, allowed_updates=allowed)
 
 
 if __name__ == "__main__":

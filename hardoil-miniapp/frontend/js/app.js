@@ -249,6 +249,44 @@
     document.body.style.overflow = "";
   }
 
+  /** Vercel API (asosiy) yoki sendData (zaxira) */
+  async function submitFeedback(payload) {
+    const body = {
+      ...payload,
+      user_id: tgUser?.id || null,
+      username: tgUser?.username || null,
+    };
+
+    // 1) Vercel serverless — terminal shart emas, to'g'ridan guruhga
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        return true;
+      }
+      console.warn("API feedback:", data.error || res.status);
+    } catch (e) {
+      console.warn("API ulanmadi:", e);
+    }
+
+    // 2) Zaxira: sendData (bot ishlab turishi kerak)
+    if (tg?.sendData) {
+      tg.sendData(JSON.stringify(payload));
+      return true;
+    }
+
+    if (!tg) {
+      console.info("Demo feedback:", body);
+      return true;
+    }
+
+    return false;
+  }
+
   function setupFeedbackForm() {
     const form = document.getElementById("feedback-form");
     const status = document.getElementById("form-status");
@@ -274,33 +312,34 @@
       const submitBtn = document.getElementById("feedback-submit");
       submitBtn.disabled = true;
       haptic("medium");
+      status.classList.remove("hidden");
 
-      try {
-        if (tg?.sendData) {
-          tg.sendData(JSON.stringify(payload));
-          status.textContent = cfg.feedback.success;
-          status.className = "form-status success";
-          form.reset();
-          if (tgUser?.first_name) {
-            document.getElementById("input-name").value = tgUser.first_name;
+      (async () => {
+        try {
+          const sent = await submitFeedback(payload);
+          if (sent) {
+            status.textContent = cfg.feedback.success;
+            status.className = "form-status success";
+            form.reset();
+            if (tgUser?.first_name) {
+              document.getElementById("input-name").value = tgUser.first_name;
+            }
+            haptic("success");
+            setTimeout(() => tg?.close?.(), 1600);
+          } else {
+            status.textContent = cfg.feedback.error;
+            status.className = "form-status error";
+            haptic("error");
           }
-          haptic("success");
-          setTimeout(() => tg.close?.(), 1400);
-        } else {
-          status.textContent = cfg.feedback.success + " (demo rejim)";
-          status.className = "form-status success";
-          console.info("Feedback (demo):", payload);
-          form.reset();
+        } catch (err) {
+          status.textContent = cfg.feedback.error;
+          status.className = "form-status error";
+          haptic("error");
+          console.error(err);
+        } finally {
+          submitBtn.disabled = false;
         }
-      } catch (err) {
-        status.textContent = cfg.feedback.error;
-        status.className = "form-status error";
-        haptic("error");
-        console.error(err);
-      } finally {
-        submitBtn.disabled = false;
-        status.classList.remove("hidden");
-      }
+      })();
     });
   }
 

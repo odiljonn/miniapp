@@ -61,9 +61,19 @@ python bot/set_menu_button.py
 
 Taklif/shikoyat: Mini App → `sendData` → bot → `ADMIN_CHAT_ID` guruh.
 
-**Muhim:** `python bot/main.py` doim ishlab turishi kerak (terminal yopilsa xabar kelmaydi).
+### Taklif/shikoyat (forma)
 
-Tekshirish: botda `/test` yozing — guruhga test xabari kelishi kerak.
+**Vercel da** (tavsiya — terminal shart emas):
+
+1. [vercel.com](https://vercel.com) → loyiha → **Settings** → **Environment Variables**
+2. Qo‘shing: `BOT_TOKEN` va `ADMIN_CHAT_ID` (`.env` dagi qiymatlar)
+3. **Redeploy** qiling
+
+Forma endi `/api/feedback` orqali to‘g‘ridan guruhga yuboriladi.
+
+**Zaxira:** `python3 bot/main.py` — `sendData` uchun (ixtiyoriy).
+
+Tekshirish: botda `/test` — guruhga test xabari.
 
 ## Muammolar
 

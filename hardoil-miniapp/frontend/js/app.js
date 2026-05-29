@@ -256,12 +256,12 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const fd = new FormData(form);
+      // user obyektini yubormaymiz — Telegram limiti; bot message.from_user dan oladi
       const payload = {
         type: "feedback",
         name: String(fd.get("name") || "").trim(),
         phone: String(fd.get("phone") || "").trim(),
         message: String(fd.get("message") || "").trim(),
-        user: tgUser,
       };
 
       if (!payload.name || !payload.phone || !payload.message) {

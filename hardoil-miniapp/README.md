@@ -61,6 +61,10 @@ python bot/set_menu_button.py
 
 Taklif/shikoyat: Mini App → `sendData` → bot → `ADMIN_CHAT_ID` guruh.
 
+**Muhim:** `python bot/main.py` doim ishlab turishi kerak (terminal yopilsa xabar kelmaydi).
+
+Tekshirish: botda `/test` yozing — guruhga test xabari kelishi kerak.
+
 ## Muammolar
 
 | Muammo | Yechim |

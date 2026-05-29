@@ -1,113 +1,74 @@
 # Hardoil — Telegram Mini App
 
-Moy almashtirish va moy sotuv magazini **Hardoil** uchun Telegram bot va Mini App (Web App).
+Moy almashtirish va moy sotuv uchun Telegram bot + Mini App.
+
+**Live:** https://miniapp-tawny-zeta.vercel.app/
 
 ## Tuzilma
 
 ```
 hardoil-miniapp/
-├── frontend/          # Mini App (HTML, CSS, JS)
-│   ├── index.html
-│   ├── css/styles.css
-│   └── js/
-│       ├── config.js  # Matnlar, katalog, manzil, Instagram
-│       └── app.js
-├── bot/
-│   ├── main.py        # aiogram 3 bot
-│   └── requirements.txt
-├── .env.example
-└── README.md
+├── frontend/          # Mini App (Vercel: Root Directory = hardoil-miniapp/frontend)
+├── bot/               # Telegram bot (aiogram 3)
+├── .env               # Maxfiy (GitHub ga commit qilinmaydi)
+└── .env.example
 ```
-
-## Imkoniyatlar
-
-- **Asosiy** — foydalanuvchi salomi, xizmatlar kartochkalari
-- **Katalog** — rasm va video galereya (grid / ro‘yxat), to‘liq ko‘rish
-- **Boshqa** — manzil, taklif/shikoyat formasi, Instagram havolasi
 
 ## Tez boshlash
 
-### 1. BotFather
-
-1. [@BotFather](https://t.me/BotFather) → `/newbot` → token oling
-2. `/setdescription` — Hardoil haqida qisqa matn
-3. **Pastdagi ko‘k «Hardoil» tugmasi** (ASLZAR dagidek — chatda xabar yozish joyining o‘ngida):
-   - Bu **Menu Button** + haqiqiy **HTTPS** `WEBAPP_URL` kerak
-   - Bot ishga tushganda avtomatik o‘rnatiladi, yoki qo‘lda:
-   ```bash
-   python bot/set_menu_button.py
-   ```
-   - **BotFather** orqali (eng ishonchli):
-     - `/mybots` → botingiz → **Bot Settings** → **Menu Button**
-     - **Configure menu button** → **Web App**
-     - Matn: `Hardoil`
-     - URL: `https://....ngrok-free.app/` (yoki hosting)
-
-### 2. Sozlash
+### 1. Sozlash
 
 ```bash
-cd hardoil-miniapp
 cp .env.example .env
-# .env ni tahrirlang: BOT_TOKEN, WEBAPP_URL, ADMIN_CHAT_ID
 ```
 
-`frontend/js/config.js` ichida manzil, telefon, Instagram va katalog media URL larini o‘zgartiring.
+`.env` da: `BOT_TOKEN`, `WEBAPP_URL`, `ADMIN_CHAT_ID`, `MENU_BUTTON_TEXT`
 
-### 3. Frontend (lokal test)
+Kontent: `frontend/js/config.js` (manzil, telefon, Instagram, katalog media)
 
-Telegram faqat **HTTPS** qabul qiladi. Lokal uchun [ngrok](https://ngrok.com/) ishlating:
+### 2. BotFather (Menu Button)
 
-```bash
-cd frontend
-python3 -m http.server 8080
-# boshqa terminalda:
-ngrok http 8080
-```
+- `/mybots` → bot → **Menu Button** → **Web App**
+- URL: `https://miniapp-tawny-zeta.vercel.app/`
+- Matn: `Hardoil`
 
-`.env` da `WEBAPP_URL` = ngrok HTTPS URL + `/` (masalan `https://abc123.ngrok-free.app/`)
-
-Brauzerda tekshirish: ngrok URL ni oching (Telegram SDKsiz demo rejim).
-
-### 4. Botni ishga tushirish
+### 3. Bot ishga tushirish
 
 ```bash
 cd hardoil-miniapp
 python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r bot/requirements.txt
 python bot/main.py
 ```
 
-Telegramda botga `/start` yozing va pastdagi **Hardoil** tugmasini bosing.
+### 4. Vercel deploy
 
-### 5. Production hosting
+GitHub `miniapp` repo → Vercel → **Root Directory:** `hardoil-miniapp/frontend`  
+Push qilganda Vercel avtomatik yangilanadi.
 
-Frontendni joylashtiring:
+Menu Button alohida:
 
-- [Vercel](https://vercel.com) / [Netlify](https://netlify.com) / o‘z serveringiz
-- `WEBAPP_URL` ni yangilang
-- Botni qayta ishga tushiring (menu button yangilanadi)
+```bash
+python bot/set_menu_button.py
+```
 
-## Taklif / shikoyat
+## Imkoniyatlar
 
-Foydalanuvchi formani to‘ldirganda Mini App `Telegram.WebApp.sendData()` orqali botga yuboradi. Bot xabarni `ADMIN_CHAT_ID` ga yo‘naltiradi.
+- **Asosiy** — salom, xizmatlar, galereya
+- **Katalog** — rasm/video grid, to‘liq ko‘rish
+- **Boshqa** — manzil, taklif/shikoyat, Instagram
 
-**ADMIN_CHAT_ID** olish: [@userinfobot](https://t.me/userinfobot) ga yozing.
-
-## Muhim eslatmalar
-
-- `BOT_TOKEN` ni hech qachon GitHubga yuklamang — faqat `.env`
-- Katalog rasmlari/videolari `config.js` → `catalogItems` da
-- Instagram: `config.js` → `instagram.url`
+Taklif/shikoyat: Mini App → `sendData` → bot → `ADMIN_CHAT_ID` guruh.
 
 ## Muammolar
 
 | Muammo | Yechim |
 |--------|--------|
-| Mini App ochilmaydi | `WEBAPP_URL` HTTPS bo‘lishi kerak |
-| Forma yuborilmaydi | Bot ishlayaptimi? `sendData` faqat Telegram ichida ishlaydi |
-| Admin xabar olmaydi | `ADMIN_CHAT_ID` to‘g‘ri va botga /start yozilgan bo‘lishi kerak |
+| Vercel 404 | Root Directory = `hardoil-miniapp/frontend` |
+| Tugma yo‘q | BotFather Menu Button + HTTPS URL |
+| Forma kelmaydi | `python bot/main.py` ishlayaptimi? Bot guruhda? |
 
 ---
 
-**Hardoil** 🛢️ — professional moy xizmati
+**Hardoil** — professional moy xizmati

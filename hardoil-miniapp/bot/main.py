@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from pathlib import Path
+from typing import Optional
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
@@ -42,7 +43,7 @@ def _webapp_url_valid() -> bool:
     )
 
 
-def _admin_id() -> int | None:
+def _admin_id() -> Optional[int]:
     if not ADMIN_CHAT_ID or not ADMIN_CHAT_ID.lstrip("-").isdigit():
         return None
     return int(ADMIN_CHAT_ID)
@@ -113,7 +114,19 @@ async def on_web_app_data(message: Message) -> None:
             logger.error("Admin ga yuborishda xato: %s", e)
 
     await message.answer(
-        "✅ Rahmat! Xabaringiz qabul qilindi. Tez orada javob beramiz."
+        "✅ Rahmat! Xabaringiz qabul qilindi. Tez orada javob beramiz.",
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=f"🛢️ {MENU_BUTTON_TEXT} — qayta ochish",
+                        web_app=WebAppInfo(url=WEBAPP_URL),
+                    )
+                ]
+            ]
+        )
+        if _webapp_url_valid()
+        else None,
     )
 
 
